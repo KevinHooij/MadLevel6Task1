@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -32,11 +34,22 @@ class ColorFragment : Fragment() {
         rvColors.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rvColors.adapter = colorAdapter
 
-        //observeColors()
+        observeColors()
     }
 
 
     private fun onColorClick(colorItem: ColorItem) {
         Snackbar.make(rvColors, "This color is: ${colorItem.name}", Snackbar.LENGTH_LONG).show()
     }
+
+    private val viewModel: ColorViewModel by viewModels()
+
+    private fun observeColors() {
+        viewModel.colorItems.observe(viewLifecycleOwner, Observer {
+            colors.clear()
+            colors.addAll(it)
+            colorAdapter.notifyDataSetChanged()
+        })
+    }
+
 }
